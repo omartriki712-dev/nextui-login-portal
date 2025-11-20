@@ -1,6 +1,16 @@
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  Button,
+  Chip,
+  Card,
+  CardBody,
+  CardHeader,
+} from "@nextui-org/react";
 import { Plus } from "lucide-react";
 
 interface CellTableProps {
@@ -32,66 +42,63 @@ export const CellTable = ({
   ownerFilter,
   activeTab,
 }: CellTableProps) => {
-  // Filter logic
-  let filteredCells = mockCells.filter(cell => {
+  let filteredCells = mockCells.filter((cell) => {
     if (identifierFilter && !cell.id.includes(identifierFilter)) return false;
     if (typeFilter !== "all" && cell.type !== typeFilter) return false;
-    if (ownerFilter && !cell.owner.toLowerCase().includes(ownerFilter.toLowerCase())) return false;
-    
-    // Tab filtering
+    if (ownerFilter && !cell.owner.toLowerCase().includes(ownerFilter.toLowerCase()))
+      return false;
+
     if (activeTab === "empty" && cell.status !== "Vide") return false;
     if (activeTab === "reserved" && cell.reservedBy === "-") return false;
     if (activeTab === "full" && cell.status !== "Pleine") return false;
-    
+
     return true;
   });
 
   return (
-    <div className="bg-card rounded-lg border">
-      <div className="p-4 border-b flex items-center justify-between">
+    <Card>
+      <CardHeader className="flex justify-between items-center">
         <h2 className="text-lg font-semibold">Cellules occupées ({filteredCells.length})</h2>
-        <Button onClick={onAddCell} className="bg-success hover:bg-success/90">
-          <Plus className="h-4 w-4 mr-2" />
+        <Button color="success" startContent={<Plus className="h-4 w-4" />} onClick={onAddCell}>
           Ajouter une cellule
         </Button>
-      </div>
-      
-      <div className="overflow-x-auto">
-        <Table>
+      </CardHeader>
+      <CardBody className="overflow-x-auto">
+        <Table aria-label="Cell management table" isStriped>
           <TableHeader>
-            <TableRow>
-              <TableHead>Identifiant</TableHead>
-              <TableHead>Position</TableHead>
-              <TableHead>Nom de la cellule</TableHead>
-              <TableHead>État de la case</TableHead>
-              <TableHead>Type cellulaire</TableHead>
-              <TableHead>Nombre de cellules (10⁶)</TableHead>
-              <TableHead>Nombre d'échantillons /patient</TableHead>
-              <TableHead>Mots clés</TableHead>
-              <TableHead>Date de congélation</TableHead>
-              <TableHead>Date d'expiration</TableHead>
-              <TableHead>Propriétaire</TableHead>
-              <TableHead>Réservée par</TableHead>
-              <TableHead>Réservée pour</TableHead>
-              <TableHead>Utilisateur</TableHead>
-            </TableRow>
+            <TableColumn>IDENTIFIANT</TableColumn>
+            <TableColumn>POSITION</TableColumn>
+            <TableColumn>NOM DE LA CELLULE</TableColumn>
+            <TableColumn>ÉTAT DE LA CASE</TableColumn>
+            <TableColumn>TYPE CELLULAIRE</TableColumn>
+            <TableColumn>NOMBRE DE CELLULES (10⁶)</TableColumn>
+            <TableColumn>NOMBRE D'ÉCHANTILLONS /PATIENT</TableColumn>
+            <TableColumn>MOTS CLÉS</TableColumn>
+            <TableColumn>DATE DE CONGÉLATION</TableColumn>
+            <TableColumn>DATE D'EXPIRATION</TableColumn>
+            <TableColumn>PROPRIÉTAIRE</TableColumn>
+            <TableColumn>RÉSERVÉE PAR</TableColumn>
+            <TableColumn>RÉSERVÉE POUR</TableColumn>
+            <TableColumn>UTILISATEUR</TableColumn>
           </TableHeader>
           <TableBody>
             {filteredCells.map((cell, index) => (
               <TableRow
                 key={`${cell.id}-${index}`}
-                className="cursor-pointer hover:bg-muted/50"
+                className="cursor-pointer hover:bg-default-100"
                 onClick={() => onRowAction(cell)}
               >
-                <TableCell className="font-mono text-sm">{cell.id}</TableCell>
+                <TableCell className="font-mono text-xs">{cell.id}</TableCell>
                 <TableCell>
-                  <Badge variant="outline" className="text-primary border-primary">
+                  <Chip color="primary" variant="flat" size="sm">
                     {cell.position}
-                  </Badge>
+                  </Chip>
                 </TableCell>
                 <TableCell>{cell.cellName}</TableCell>
                 <TableCell>
-                  <Badge variant="destructive">{cell.status}</Badge>
+                  <Chip color="danger" size="sm">
+                    {cell.status}
+                  </Chip>
                 </TableCell>
                 <TableCell>{cell.type}</TableCell>
                 <TableCell className="text-center">{cell.cellCount}</TableCell>
@@ -107,7 +114,7 @@ export const CellTable = ({
             ))}
           </TableBody>
         </Table>
-      </div>
-    </div>
+      </CardBody>
+    </Card>
   );
 };
