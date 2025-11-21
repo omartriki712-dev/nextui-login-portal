@@ -8,7 +8,7 @@ import { ActionModal } from "@/components/ActionModal";
 
 type FilterTab = "all" | "empty" | "reserved" | "full";
 
-const Dashboard = () => {
+const RackManager = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
   const [identifierFilter, setIdentifierFilter] = useState("");
@@ -28,7 +28,7 @@ const Dashboard = () => {
       {/* Header Navigation */}
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <div className="flex items-center gap-4">
-          <Button isIconOnly variant="light" onClick={() => navigate("/")}>
+          <Button isIconOnly variant="light" onClick={() => navigate("/dashboard")}>
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div className="flex items-center gap-2 text-sm">
@@ -152,4 +152,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default RackManager;
