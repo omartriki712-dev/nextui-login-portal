@@ -5,6 +5,9 @@ import { NextUIProvider } from "@nextui-org/react";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import StatsDashboard from "./pages/StatsDashboard";
+import Tanks from "./pages/Tanks";
+import Racks from "./pages/Racks";
+import Boxes from "./pages/Boxes";
 import RackManager from "./pages/RackManager";
 import NotFound from "./pages/NotFound";
 
@@ -19,6 +22,9 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<StatsDashboard />} />
+          <Route path="/tanks" element={<Tanks />} />
+          <Route path="/racks" element={<Racks />} />
+          <Route path="/boxes" element={<Boxes />} />
           <Route path="/rack-manager" element={<RackManager />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

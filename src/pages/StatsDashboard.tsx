@@ -1,6 +1,7 @@
 import { Card, CardBody, Button, Chip } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
 import { Server, Package, Grid3x3, Box, Calendar, TrendingUp, AlertCircle } from "lucide-react";
+import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 const StatsDashboard = () => {
   const navigate = useNavigate();
@@ -60,6 +61,28 @@ const StatsDashboard = () => {
     { action: "Cellule vidée", location: "Tank 2 > Rack 8", time: "Il y a 1j" },
   ];
 
+  const reservationData = [
+    { month: "Jan", reservations: 12, completed: 10 },
+    { month: "Fév", reservations: 19, completed: 15 },
+    { month: "Mar", reservations: 15, completed: 14 },
+    { month: "Avr", reservations: 25, completed: 20 },
+    { month: "Mai", reservations: 22, completed: 18 },
+    { month: "Jun", reservations: 30, completed: 25 },
+  ];
+
+  const cellUsageData = [
+    { name: "Pleines", value: 768, color: "#10b981" },
+    { name: "Vides", value: 204, color: "#6b7280" },
+    { name: "Réservées", value: 0, color: "#f59e0b" },
+  ];
+
+  const capacityTrendData = [
+    { week: "S1", tanks: 65, racks: 70, boxes: 75 },
+    { week: "S2", tanks: 68, racks: 72, boxes: 78 },
+    { week: "S3", tanks: 70, racks: 75, boxes: 80 },
+    { week: "S4", tanks: 72, racks: 77, boxes: 79 },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-default-50 to-default-100 p-6">
       {/* Header */}
@@ -85,11 +108,24 @@ const StatsDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           {stats.map((stat) => {
             const Icon = stat.icon;
+            const getNavigationPath = () => {
+              switch (stat.title) {
+                case "Tanks": return "/tanks";
+                case "Racks": return "/racks";
+                case "Cases": return "/boxes";
+                case "Cellules": return "/rack-manager";
+                default: return null;
+              }
+            };
             return (
               <Card
                 key={stat.title}
                 className="border-none bg-gradient-to-br shadow-lg hover:shadow-xl transition-shadow"
                 isPressable
+                onPress={() => {
+                  const path = getNavigationPath();
+                  if (path) navigate(path);
+                }}
               >
                 <CardBody className="p-6">
                   <div className="flex items-start justify-between mb-4">
@@ -109,9 +145,84 @@ const StatsDashboard = () => {
           })}
         </div>
 
-        {/* Cell Breakdown & Recent Activity */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Cell Status Breakdown */}
+        {/* Charts Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          {/* Reservations Chart */}
+          <Card className="border-none shadow-lg">
+            <CardBody className="p-6">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Calendar className="h-5 w-5 text-danger" />
+                Statistiques de réservations
+              </h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={reservationData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="reservations" fill="#f43f5e" name="Réservations" />
+                  <Bar dataKey="completed" fill="#10b981" name="Complétées" />
+                </BarChart>
+              </ResponsiveContainer>
+            </CardBody>
+          </Card>
+
+          {/* Cell Usage Pie Chart */}
+          <Card className="border-none shadow-lg">
+            <CardBody className="p-6">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <Box className="h-5 w-5 text-primary" />
+                Utilisation des cellules
+              </h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={cellUsageData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={100}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {cellUsageData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </CardBody>
+          </Card>
+        </div>
+
+        {/* Capacity Trend & Cell Breakdown */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          {/* Capacity Trend */}
+          <Card className="border-none shadow-lg">
+            <CardBody className="p-6">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-success" />
+                Évolution de la capacité
+              </h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={capacityTrendData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="week" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Line type="monotone" dataKey="tanks" stroke="#3b82f6" name="Tanks" strokeWidth={2} />
+                  <Line type="monotone" dataKey="racks" stroke="#a855f7" name="Racks" strokeWidth={2} />
+                  <Line type="monotone" dataKey="boxes" stroke="#10b981" name="Boxes" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
+            </CardBody>
+          </Card>
+
+          {/* Cell Breakdown */}
           <Card className="border-none shadow-lg">
             <CardBody className="p-6">
               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
@@ -147,32 +258,32 @@ const StatsDashboard = () => {
               </div>
             </CardBody>
           </Card>
-
-          {/* Recent Activity */}
-          <Card className="border-none shadow-lg">
-            <CardBody className="p-6">
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <AlertCircle className="h-5 w-5 text-secondary" />
-                Activité récente
-              </h3>
-              <div className="space-y-4">
-                {recentActivity.map((activity, index) => (
-                  <div
-                    key={index}
-                    className="flex items-start gap-3 p-3 rounded-lg bg-default-100 hover:bg-default-200 transition-colors"
-                  >
-                    <div className="w-2 h-2 rounded-full bg-primary mt-2" />
-                    <div className="flex-1">
-                      <p className="font-medium text-default-700">{activity.action}</p>
-                      <p className="text-small text-default-500">{activity.location}</p>
-                    </div>
-                    <span className="text-tiny text-default-400">{activity.time}</span>
-                  </div>
-                ))}
-              </div>
-            </CardBody>
-          </Card>
         </div>
+
+        {/* Recent Activity */}
+        <Card className="border-none shadow-lg">
+          <CardBody className="p-6">
+            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-secondary" />
+              Activité récente
+            </h3>
+            <div className="space-y-4">
+              {recentActivity.map((activity, index) => (
+                <div
+                  key={index}
+                  className="flex items-start gap-3 p-3 rounded-lg bg-default-100 hover:bg-default-200 transition-colors"
+                >
+                  <div className="w-2 h-2 rounded-full bg-primary mt-2" />
+                  <div className="flex-1">
+                    <p className="font-medium text-default-700">{activity.action}</p>
+                    <p className="text-small text-default-500">{activity.location}</p>
+                  </div>
+                  <span className="text-tiny text-default-400">{activity.time}</span>
+                </div>
+              ))}
+            </div>
+          </CardBody>
+        </Card>
       </div>
     </div>
   );
