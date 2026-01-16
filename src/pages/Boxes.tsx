@@ -7,8 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Grid3x3, Search, Package } from "lucide-react";
 import { useState } from "react";
+import { AddBoxModal } from "@/components/AddBoxModal";
 
 const Boxes = () => {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [rackFilter, setRackFilter] = useState("all");
@@ -60,11 +62,13 @@ const Boxes = () => {
               <p className="text-muted-foreground mt-1">Gérez toutes vos boxes de stockage</p>
             </div>
           </div>
-          <Button variant="success">
+          <Button variant="success" onClick={() => setIsAddModalOpen(true)}>
             <Plus className="h-5 w-5 mr-2" />
             Nouvelle Box
           </Button>
         </div>
+
+        <AddBoxModal open={isAddModalOpen} onOpenChange={setIsAddModalOpen} />
 
         {/* Filters */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">

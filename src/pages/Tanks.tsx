@@ -6,8 +6,10 @@ import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Server, Search } from "lucide-react";
 import { useState } from "react";
+import { AddTankModal } from "@/components/AddTankModal";
 
 const Tanks = () => {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -50,11 +52,13 @@ const Tanks = () => {
               <p className="text-muted-foreground mt-1">Gérez tous vos tanks de stockage</p>
             </div>
           </div>
-          <Button>
+          <Button onClick={() => setIsAddModalOpen(true)}>
             <Plus className="h-5 w-5 mr-2" />
             Nouveau Tank
           </Button>
         </div>
+
+        <AddTankModal open={isAddModalOpen} onOpenChange={setIsAddModalOpen} />
 
         {/* Search */}
         <div className="mb-6 relative">
