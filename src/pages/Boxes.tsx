@@ -1,4 +1,9 @@
-import { Card, CardBody, Button, Input, Chip, Select, SelectItem } from "@nextui-org/react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Grid3x3, Search, Package } from "lucide-react";
 import { useState } from "react";
@@ -9,16 +14,16 @@ const Boxes = () => {
   const [rackFilter, setRackFilter] = useState("all");
 
   const boxes = [
-    { id: 1, name: "Box 1", rack: "Rack 1", cells: 81, capacity: "79%", status: "active" },
-    { id: 2, name: "Box 2", rack: "Rack 2", cells: 81, capacity: "92%", status: "active" },
-    { id: 3, name: "Box 3", rack: "Rack 1", cells: 81, capacity: "65%", status: "active" },
-    { id: 4, name: "Box 4", rack: "Rack 3", cells: 81, capacity: "88%", status: "active" },
-    { id: 5, name: "Box 5", rack: "Rack 2", cells: 81, capacity: "45%", status: "active" },
-    { id: 6, name: "Box 6", rack: "Rack 4", cells: 81, capacity: "0%", status: "empty" },
-    { id: 7, name: "Box 7", rack: "Rack 3", cells: 81, capacity: "100%", status: "full" },
-    { id: 8, name: "Box 8", rack: "Rack 5", cells: 81, capacity: "71%", status: "active" },
-    { id: 9, name: "Box 9", rack: "Rack 4", cells: 81, capacity: "55%", status: "active" },
-    { id: 10, name: "Box 10", rack: "Rack 6", cells: 81, capacity: "95%", status: "active" },
+    { id: 1, name: "Box 1", rack: "Rack 1", cells: 81, capacity: 79, status: "active" },
+    { id: 2, name: "Box 2", rack: "Rack 2", cells: 81, capacity: 92, status: "active" },
+    { id: 3, name: "Box 3", rack: "Rack 1", cells: 81, capacity: 65, status: "active" },
+    { id: 4, name: "Box 4", rack: "Rack 3", cells: 81, capacity: 88, status: "active" },
+    { id: 5, name: "Box 5", rack: "Rack 2", cells: 81, capacity: 45, status: "active" },
+    { id: 6, name: "Box 6", rack: "Rack 4", cells: 81, capacity: 0, status: "empty" },
+    { id: 7, name: "Box 7", rack: "Rack 3", cells: 81, capacity: 100, status: "full" },
+    { id: 8, name: "Box 8", rack: "Rack 5", cells: 81, capacity: 71, status: "active" },
+    { id: 9, name: "Box 9", rack: "Rack 4", cells: 81, capacity: 55, status: "active" },
+    { id: 10, name: "Box 10", rack: "Rack 6", cells: 81, capacity: 95, status: "active" },
   ];
 
   const filteredBoxes = boxes.filter(box => {
@@ -28,88 +33,90 @@ const Boxes = () => {
     return matchesSearch && matchesRack;
   });
 
-  const getStatusColor = (status: string) => {
+  const getStatusVariant = (status: string) => {
     switch (status) {
       case "active": return "success";
       case "full": return "warning";
-      case "empty": return "default";
-      default: return "default";
+      case "empty": return "secondary";
+      default: return "secondary";
     }
   };
 
   const racks = ["all", "Rack 1", "Rack 2", "Rack 3", "Rack 4", "Rack 5", "Rack 6"];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-default-50 to-default-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-muted/50 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
-            <Button isIconOnly variant="light" onClick={() => navigate("/dashboard")}>
+            <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
               <ArrowLeft className="h-5 w-5" />
             </Button>
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-green-500 to-emerald-500 bg-clip-text text-transparent">
                 Gestion des Boxes
               </h1>
-              <p className="text-default-600 mt-1">Gérez toutes vos boxes de stockage</p>
+              <p className="text-muted-foreground mt-1">Gérez toutes vos boxes de stockage</p>
             </div>
           </div>
-          <Button color="success" variant="shadow" startContent={<Plus className="h-5 w-5" />}>
+          <Button variant="success">
+            <Plus className="h-5 w-5 mr-2" />
             Nouvelle Box
           </Button>
         </div>
 
         {/* Filters */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-          <Input
-            placeholder="Rechercher une box..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            startContent={<Search className="h-4 w-4 text-default-400" />}
-            variant="bordered"
-            size="lg"
-          />
-          <Select
-            label="Filtrer par Rack"
-            selectedKeys={[rackFilter]}
-            onChange={(e) => setRackFilter(e.target.value)}
-            variant="bordered"
-            startContent={<Package className="h-4 w-4" />}
-          >
-            {racks.map((rack) => (
-              <SelectItem key={rack} value={rack}>
-                {rack === "all" ? "Tous les racks" : rack}
-              </SelectItem>
-            ))}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Rechercher une box..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 h-12"
+            />
+          </div>
+          <Select value={rackFilter} onValueChange={setRackFilter}>
+            <SelectTrigger className="h-12">
+              <Package className="h-4 w-4 mr-2" />
+              <SelectValue placeholder="Filtrer par Rack" />
+            </SelectTrigger>
+            <SelectContent>
+              {racks.map((rack) => (
+                <SelectItem key={rack} value={rack}>
+                  {rack === "all" ? "Tous les racks" : rack}
+                </SelectItem>
+              ))}
+            </SelectContent>
           </Select>
         </div>
 
         {/* Stats Summary */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <Card className="border-none shadow-lg">
-            <CardBody className="p-4">
-              <p className="text-small text-default-500">Total Boxes</p>
+            <CardContent className="p-4">
+              <p className="text-sm text-muted-foreground">Total Boxes</p>
               <p className="text-3xl font-bold">{boxes.length}</p>
-            </CardBody>
+            </CardContent>
           </Card>
           <Card className="border-none shadow-lg">
-            <CardBody className="p-4">
-              <p className="text-small text-default-500">Actives</p>
-              <p className="text-3xl font-bold text-success">{boxes.filter(b => b.status === "active").length}</p>
-            </CardBody>
+            <CardContent className="p-4">
+              <p className="text-sm text-muted-foreground">Actives</p>
+              <p className="text-3xl font-bold text-green-500">{boxes.filter(b => b.status === "active").length}</p>
+            </CardContent>
           </Card>
           <Card className="border-none shadow-lg">
-            <CardBody className="p-4">
-              <p className="text-small text-default-500">Pleines</p>
-              <p className="text-3xl font-bold text-warning">{boxes.filter(b => b.status === "full").length}</p>
-            </CardBody>
+            <CardContent className="p-4">
+              <p className="text-sm text-muted-foreground">Pleines</p>
+              <p className="text-3xl font-bold text-orange-500">{boxes.filter(b => b.status === "full").length}</p>
+            </CardContent>
           </Card>
           <Card className="border-none shadow-lg">
-            <CardBody className="p-4">
-              <p className="text-small text-default-500">Vides</p>
-              <p className="text-3xl font-bold text-default-400">{boxes.filter(b => b.status === "empty").length}</p>
-            </CardBody>
+            <CardContent className="p-4">
+              <p className="text-sm text-muted-foreground">Vides</p>
+              <p className="text-3xl font-bold text-gray-400">{boxes.filter(b => b.status === "empty").length}</p>
+            </CardContent>
           </Card>
         </div>
 
@@ -118,38 +125,32 @@ const Boxes = () => {
           {filteredBoxes.map((box) => (
             <Card
               key={box.id}
-              isPressable
-              className="border-none shadow-lg hover:shadow-xl transition-all"
-              onPress={() => navigate("/rack-manager")}
+              className="border-none shadow-lg hover:shadow-xl transition-all cursor-pointer"
+              onClick={() => navigate("/rack-manager")}
             >
-              <CardBody className="p-6">
+              <CardContent className="p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div className="p-3 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500">
                     <Grid3x3 className="h-8 w-8 text-white" />
                   </div>
-                  <Chip color={getStatusColor(box.status) as any} variant="flat" size="sm">
+                  <Badge variant={getStatusVariant(box.status) as any}>
                     {box.status}
-                  </Chip>
+                  </Badge>
                 </div>
                 <h3 className="text-2xl font-bold mb-2">{box.name}</h3>
-                <p className="text-default-500 text-small mb-4">{box.rack}</p>
+                <p className="text-muted-foreground text-sm mb-4">{box.rack}</p>
                 <div className="space-y-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-small text-default-600">Cellules:</span>
+                    <span className="text-sm text-muted-foreground">Cellules:</span>
                     <span className="font-semibold">{box.cells}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-small text-default-600">Capacité:</span>
-                    <span className="font-semibold">{box.capacity}</span>
+                    <span className="text-sm text-muted-foreground">Capacité:</span>
+                    <span className="font-semibold">{box.capacity}%</span>
                   </div>
-                  <div className="w-full bg-default-200 rounded-full h-2 mt-2">
-                    <div
-                      className="h-2 rounded-full bg-gradient-to-r from-green-500 to-emerald-500"
-                      style={{ width: box.capacity }}
-                    />
-                  </div>
+                  <Progress value={box.capacity} className="h-2 mt-2" indicatorClassName="bg-gradient-to-r from-green-500 to-emerald-500" />
                 </div>
-              </CardBody>
+              </CardContent>
             </Card>
           ))}
         </div>

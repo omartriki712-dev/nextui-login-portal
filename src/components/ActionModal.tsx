@@ -1,20 +1,19 @@
 import { useState } from "react";
 import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-  Input,
-  Select,
-  SelectItem,
-  Textarea,
-  Tabs,
-  Tab,
-  Card,
-  CardBody,
-} from "@nextui-org/react";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 
 interface ActionModalProps {
@@ -67,216 +66,232 @@ export const ActionModal = ({ open, onOpenChange, cell }: ActionModalProps) => {
 
   if (showDeleteConfirm) {
     return (
-      <Modal isOpen={open} onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader>Confirmation finale</ModalHeader>
-              <ModalBody>
-                <p>
-                  Vous êtes sur le point de supprimer définitivement la cellule {cell.id}. Cette
-                  action ne peut pas être annulée.
-                </p>
-              </ModalBody>
-              <ModalFooter>
-                <Button variant="flat" onPress={() => setShowDeleteConfirm(false)}>
-                  Annuler
-                </Button>
-                <Button color="danger" onPress={handleDelete}>
-                  Supprimer définitivement
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirmation finale</DialogTitle>
+            <DialogDescription>
+              Vous êtes sur le point de supprimer définitivement la cellule {cell.id}. Cette
+              action ne peut pas être annulée.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDeleteConfirm(false)}>
+              Annuler
+            </Button>
+            <Button variant="destructive" onClick={handleDelete}>
+              Supprimer définitivement
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     );
   }
 
   return (
-    <Modal isOpen={open} onOpenChange={onOpenChange} size="2xl" scrollBehavior="inside">
-      <ModalContent>
-        {(onClose) => (
-          <>
-            <ModalHeader>Actions sur la cellule {cell.id}</ModalHeader>
-            <ModalBody>
-              <Tabs aria-label="Action options" variant="underlined">
-                <Tab key="modify" title="Modifier">
-                  <form onSubmit={handleModify} className="flex flex-col gap-4 pt-4">
-                    <div className="grid grid-cols-2 gap-4">
-                      <Input
-                        label="Identifiant"
-                        value={modifyData.identifier}
-                        onChange={(e) =>
-                          setModifyData({ ...modifyData, identifier: e.target.value })
-                        }
-                        isRequired
-                        variant="bordered"
-                      />
-                      <Input
-                        label="Nom de la cellule"
-                        value={modifyData.cellName}
-                        onChange={(e) =>
-                          setModifyData({ ...modifyData, cellName: e.target.value })
-                        }
-                        variant="bordered"
-                      />
-                    </div>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Actions sur la cellule {cell.id}</DialogTitle>
+        </DialogHeader>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <Select
-                        label="Type cellulaire"
-                        selectedKeys={modifyData.cellType ? [modifyData.cellType] : []}
-                        onChange={(e) =>
-                          setModifyData({ ...modifyData, cellType: e.target.value })
-                        }
-                        isRequired
-                        variant="bordered"
-                      >
-                        <SelectItem key="LB" value="LB">
-                          LB
-                        </SelectItem>
-                        <SelectItem key="PBMC" value="PBMC">
-                          PBMC
-                        </SelectItem>
-                      </Select>
-                      <Input
-                        label="Nombre de cellules (10⁶)"
-                        type="number"
-                        value={modifyData.cellCount}
-                        onChange={(e) =>
-                          setModifyData({ ...modifyData, cellCount: e.target.value })
-                        }
-                        variant="bordered"
-                      />
-                    </div>
+        <Tabs defaultValue="modify">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="modify">Modifier</TabsTrigger>
+            <TabsTrigger value="delete">Supprimer</TabsTrigger>
+            <TabsTrigger value="reserve">Réserver</TabsTrigger>
+          </TabsList>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <Input
-                        label="Date de congélation"
-                        type="date"
-                        value={modifyData.freezeDate}
-                        onChange={(e) =>
-                          setModifyData({ ...modifyData, freezeDate: e.target.value })
-                        }
-                        variant="bordered"
-                      />
-                      <Input
-                        label="Date d'expiration"
-                        type="date"
-                        value={modifyData.expiryDate}
-                        onChange={(e) =>
-                          setModifyData({ ...modifyData, expiryDate: e.target.value })
-                        }
-                        variant="bordered"
-                      />
-                    </div>
+          <TabsContent value="modify">
+            <form onSubmit={handleModify} className="space-y-4 pt-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="modify-identifier">Identifiant</Label>
+                  <Input
+                    id="modify-identifier"
+                    value={modifyData.identifier}
+                    onChange={(e) =>
+                      setModifyData({ ...modifyData, identifier: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="modify-cellName">Nom de la cellule</Label>
+                  <Input
+                    id="modify-cellName"
+                    value={modifyData.cellName}
+                    onChange={(e) =>
+                      setModifyData({ ...modifyData, cellName: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
 
-                    <Textarea
-                      label="Commentaire"
-                      value={modifyData.comment}
-                      onChange={(e) => setModifyData({ ...modifyData, comment: e.target.value })}
-                      variant="bordered"
-                    />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="modify-cellType">Type cellulaire</Label>
+                  <Select
+                    value={modifyData.cellType}
+                    onValueChange={(value) =>
+                      setModifyData({ ...modifyData, cellType: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Choisir un type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="LB">LB</SelectItem>
+                      <SelectItem value="PBMC">PBMC</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="modify-cellCount">Nombre de cellules (10⁶)</Label>
+                  <Input
+                    id="modify-cellCount"
+                    type="number"
+                    value={modifyData.cellCount}
+                    onChange={(e) =>
+                      setModifyData({ ...modifyData, cellCount: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
 
-                    <div className="flex gap-3 justify-end pt-2">
-                      <Button variant="flat" onPress={onClose}>
-                        Annuler
-                      </Button>
-                      <Button color="primary" type="submit">
-                        Enregistrer les modifications
-                      </Button>
-                    </div>
-                  </form>
-                </Tab>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="modify-freezeDate">Date de congélation</Label>
+                  <Input
+                    id="modify-freezeDate"
+                    type="date"
+                    value={modifyData.freezeDate}
+                    onChange={(e) =>
+                      setModifyData({ ...modifyData, freezeDate: e.target.value })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="modify-expiryDate">Date d'expiration</Label>
+                  <Input
+                    id="modify-expiryDate"
+                    type="date"
+                    value={modifyData.expiryDate}
+                    onChange={(e) =>
+                      setModifyData({ ...modifyData, expiryDate: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
 
-                <Tab key="delete" title="Supprimer">
-                  <div className="flex flex-col gap-4 py-4 text-center">
-                    <p className="text-lg">Êtes-vous sûr de vouloir supprimer cette cellule ?</p>
-                    <Card>
-                      <CardBody>
-                        <p className="font-mono text-sm mb-2">Identifiant: {cell.id}</p>
-                        <p className="text-sm">Position: {cell.position}</p>
-                        <p className="text-sm">Type: {cell.type}</p>
-                      </CardBody>
-                    </Card>
-                    <p className="text-sm text-danger">
-                      Cette action est irréversible et supprimera définitivement toutes les données
-                      associées.
-                    </p>
-                    <div className="flex gap-3 justify-center pt-4">
-                      <Button variant="flat" onPress={onClose}>
-                        Annuler
-                      </Button>
-                      <Button color="danger" onPress={() => setShowDeleteConfirm(true)}>
-                        Confirmer la suppression
-                      </Button>
-                    </div>
-                  </div>
-                </Tab>
+              <div className="space-y-2">
+                <Label htmlFor="modify-comment">Commentaire</Label>
+                <Textarea
+                  id="modify-comment"
+                  value={modifyData.comment}
+                  onChange={(e) => setModifyData({ ...modifyData, comment: e.target.value })}
+                />
+              </div>
 
-                <Tab key="reserve" title="Réserver">
-                  <form onSubmit={handleReservation} className="flex flex-col gap-4 pt-4">
-                    <Input
-                      label="Réservée par"
-                      placeholder="Nom de la personne"
-                      value={reservationData.reservedBy}
-                      onChange={(e) =>
-                        setReservationData({ ...reservationData, reservedBy: e.target.value })
-                      }
-                      isRequired
-                      variant="bordered"
-                    />
+              <div className="flex gap-3 justify-end pt-2">
+                <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                  Annuler
+                </Button>
+                <Button type="submit">Enregistrer les modifications</Button>
+              </div>
+            </form>
+          </TabsContent>
 
-                    <Input
-                      label="Réservée pour"
-                      placeholder="Objectif ou projet"
-                      value={reservationData.reservedFor}
-                      onChange={(e) =>
-                        setReservationData({ ...reservationData, reservedFor: e.target.value })
-                      }
-                      isRequired
-                      variant="bordered"
-                    />
+          <TabsContent value="delete">
+            <div className="flex flex-col gap-4 py-4 text-center">
+              <p className="text-lg">Êtes-vous sûr de vouloir supprimer cette cellule ?</p>
+              <Card>
+                <CardContent className="pt-6">
+                  <p className="font-mono text-sm mb-2">Identifiant: {cell.id}</p>
+                  <p className="text-sm">Position: {cell.position}</p>
+                  <p className="text-sm">Type: {cell.type}</p>
+                </CardContent>
+              </Card>
+              <p className="text-sm text-destructive">
+                Cette action est irréversible et supprimera définitivement toutes les données
+                associées.
+              </p>
+              <div className="flex gap-3 justify-center pt-4">
+                <Button variant="outline" onClick={() => onOpenChange(false)}>
+                  Annuler
+                </Button>
+                <Button variant="destructive" onClick={() => setShowDeleteConfirm(true)}>
+                  Confirmer la suppression
+                </Button>
+              </div>
+            </div>
+          </TabsContent>
 
-                    <Input
-                      label="Date de réservation"
-                      type="date"
-                      value={reservationData.reservationDate}
-                      onChange={(e) =>
-                        setReservationData({
-                          ...reservationData,
-                          reservationDate: e.target.value,
-                        })
-                      }
-                      variant="bordered"
-                    />
+          <TabsContent value="reserve">
+            <form onSubmit={handleReservation} className="space-y-4 pt-4">
+              <div className="space-y-2">
+                <Label htmlFor="reservedBy">Réservée par</Label>
+                <Input
+                  id="reservedBy"
+                  placeholder="Nom de la personne"
+                  value={reservationData.reservedBy}
+                  onChange={(e) =>
+                    setReservationData({ ...reservationData, reservedBy: e.target.value })
+                  }
+                  required
+                />
+              </div>
 
-                    <Textarea
-                      label="Commentaire"
-                      placeholder="Notes supplémentaires..."
-                      value={reservationData.comment}
-                      onChange={(e) =>
-                        setReservationData({ ...reservationData, comment: e.target.value })
-                      }
-                      variant="bordered"
-                    />
+              <div className="space-y-2">
+                <Label htmlFor="reservedFor">Réservée pour</Label>
+                <Input
+                  id="reservedFor"
+                  placeholder="Objectif ou projet"
+                  value={reservationData.reservedFor}
+                  onChange={(e) =>
+                    setReservationData({ ...reservationData, reservedFor: e.target.value })
+                  }
+                  required
+                />
+              </div>
 
-                    <div className="flex gap-3 justify-end pt-2">
-                      <Button variant="flat" onPress={onClose}>
-                        Annuler
-                      </Button>
-                      <Button color="primary" type="submit">
-                        Créer la réservation
-                      </Button>
-                    </div>
-                  </form>
-                </Tab>
-              </Tabs>
-            </ModalBody>
-          </>
-        )}
-      </ModalContent>
-    </Modal>
+              <div className="space-y-2">
+                <Label htmlFor="reservationDate">Date de réservation</Label>
+                <Input
+                  id="reservationDate"
+                  type="date"
+                  value={reservationData.reservationDate}
+                  onChange={(e) =>
+                    setReservationData({
+                      ...reservationData,
+                      reservationDate: e.target.value,
+                    })
+                  }
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="reservation-comment">Commentaire</Label>
+                <Textarea
+                  id="reservation-comment"
+                  placeholder="Notes supplémentaires..."
+                  value={reservationData.comment}
+                  onChange={(e) =>
+                    setReservationData({ ...reservationData, comment: e.target.value })
+                  }
+                />
+              </div>
+
+              <div className="flex gap-3 justify-end pt-2">
+                <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                  Annuler
+                </Button>
+                <Button type="submit">Créer la réservation</Button>
+              </div>
+            </form>
+          </TabsContent>
+        </Tabs>
+      </DialogContent>
+    </Dialog>
   );
 };
