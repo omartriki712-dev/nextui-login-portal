@@ -3,17 +3,20 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Download, Upload, Grid3x3 } from "lucide-react";
+import { ArrowLeft, Download, Upload, Grid3x3, List } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { CellTable } from "@/components/CellTable";
+import { CellGrid } from "@/components/CellGrid";
 import { AddCellModal } from "@/components/AddCellModal";
 import { ActionModal } from "@/components/ActionModal";
 
 type FilterTab = "all" | "empty" | "reserved" | "full";
+type ViewMode = "table" | "grid";
 
 const RackManager = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
+  const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [identifierFilter, setIdentifierFilter] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
   const [ownerFilter, setOwnerFilter] = useState("");
@@ -21,7 +24,7 @@ const RackManager = () => {
   const [isActionModalOpen, setIsActionModalOpen] = useState(false);
   const [selectedCell, setSelectedCell] = useState<any>(null);
 
-  const handleRowAction = (cell: any) => {
+  const handleCellAction = (cell: any) => {
     setSelectedCell(cell);
     setIsActionModalOpen(true);
   };
@@ -55,10 +58,22 @@ const RackManager = () => {
             <Upload className="h-4 w-4 mr-2" />
             Import
           </Button>
-          <Button variant="outline">
-            <Grid3x3 className="h-4 w-4 mr-2" />
-            Sélection multiples
-          </Button>
+          <div className="flex border rounded-md">
+            <Button
+              variant={viewMode === "grid" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("grid")}
+            >
+              <Grid3x3 className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === "table" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setViewMode("table")}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
           <Button variant="outline" disabled>
             Remplir sélection (0)
           </Button>
@@ -138,15 +153,25 @@ const RackManager = () => {
         </Button>
       </div>
 
-      {/* Table */}
-      <CellTable
-        onAddCell={() => setIsAddModalOpen(true)}
-        onRowAction={handleRowAction}
-        identifierFilter={identifierFilter}
-        typeFilter={typeFilter}
-        ownerFilter={ownerFilter}
-        activeTab={activeTab}
-      />
+      {/* Table or Grid View */}
+      {viewMode === "table" ? (
+        <CellTable
+          onAddCell={() => setIsAddModalOpen(true)}
+          onRowAction={handleCellAction}
+          identifierFilter={identifierFilter}
+          typeFilter={typeFilter}
+          ownerFilter={ownerFilter}
+          activeTab={activeTab}
+        />
+      ) : (
+        <CellGrid
+          onAddCell={() => setIsAddModalOpen(true)}
+          onCellClick={handleCellAction}
+          activeTab={activeTab}
+          rows={9}
+          cols={9}
+        />
+      )}
 
       {/* Modals */}
       <AddCellModal open={isAddModalOpen} onOpenChange={setIsAddModalOpen} />

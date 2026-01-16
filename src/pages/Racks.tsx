@@ -7,8 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Plus, Package, Search, Server } from "lucide-react";
 import { useState } from "react";
+import { AddRackModal } from "@/components/AddRackModal";
 
 const Racks = () => {
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [tankFilter, setTankFilter] = useState("all");
@@ -58,11 +60,13 @@ const Racks = () => {
               <p className="text-muted-foreground mt-1">Gérez tous vos racks de stockage</p>
             </div>
           </div>
-          <Button variant="secondary">
+          <Button variant="secondary" onClick={() => setIsAddModalOpen(true)}>
             <Plus className="h-5 w-5 mr-2" />
             Nouveau Rack
           </Button>
         </div>
+
+        <AddRackModal open={isAddModalOpen} onOpenChange={setIsAddModalOpen} />
 
         {/* Filters */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
