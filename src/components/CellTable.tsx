@@ -1,16 +1,14 @@
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
-  TableHeader,
-  TableColumn,
   TableBody,
-  TableRow,
   TableCell,
-  Button,
-  Chip,
-  Card,
-  CardBody,
-  CardHeader,
-} from "@nextui-org/react";
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Plus } from "lucide-react";
 
 interface CellTableProps {
@@ -57,48 +55,51 @@ export const CellTable = ({
 
   return (
     <Card>
-      <CardHeader className="flex justify-between items-center">
-        <h2 className="text-lg font-semibold">Cellules occupées ({filteredCells.length})</h2>
-        <Button color="success" startContent={<Plus className="h-4 w-4" />} onClick={onAddCell}>
+      <CardHeader className="flex flex-row justify-between items-center">
+        <CardTitle>Cellules occupées ({filteredCells.length})</CardTitle>
+        <Button variant="success" onClick={onAddCell}>
+          <Plus className="h-4 w-4 mr-2" />
           Ajouter une cellule
         </Button>
       </CardHeader>
-      <CardBody className="overflow-x-auto">
-        <Table aria-label="Cell management table" isStriped>
+      <CardContent className="overflow-x-auto">
+        <Table>
           <TableHeader>
-            <TableColumn>IDENTIFIANT</TableColumn>
-            <TableColumn>POSITION</TableColumn>
-            <TableColumn>NOM DE LA CELLULE</TableColumn>
-            <TableColumn>ÉTAT DE LA CASE</TableColumn>
-            <TableColumn>TYPE CELLULAIRE</TableColumn>
-            <TableColumn>NOMBRE DE CELLULES (10⁶)</TableColumn>
-            <TableColumn>NOMBRE D'ÉCHANTILLONS /PATIENT</TableColumn>
-            <TableColumn>MOTS CLÉS</TableColumn>
-            <TableColumn>DATE DE CONGÉLATION</TableColumn>
-            <TableColumn>DATE D'EXPIRATION</TableColumn>
-            <TableColumn>PROPRIÉTAIRE</TableColumn>
-            <TableColumn>RÉSERVÉE PAR</TableColumn>
-            <TableColumn>RÉSERVÉE POUR</TableColumn>
-            <TableColumn>UTILISATEUR</TableColumn>
+            <TableRow>
+              <TableHead>IDENTIFIANT</TableHead>
+              <TableHead>POSITION</TableHead>
+              <TableHead>NOM DE LA CELLULE</TableHead>
+              <TableHead>ÉTAT DE LA CASE</TableHead>
+              <TableHead>TYPE CELLULAIRE</TableHead>
+              <TableHead>NOMBRE DE CELLULES (10⁶)</TableHead>
+              <TableHead>NOMBRE D'ÉCHANTILLONS /PATIENT</TableHead>
+              <TableHead>MOTS CLÉS</TableHead>
+              <TableHead>DATE DE CONGÉLATION</TableHead>
+              <TableHead>DATE D'EXPIRATION</TableHead>
+              <TableHead>PROPRIÉTAIRE</TableHead>
+              <TableHead>RÉSERVÉE PAR</TableHead>
+              <TableHead>RÉSERVÉE POUR</TableHead>
+              <TableHead>UTILISATEUR</TableHead>
+            </TableRow>
           </TableHeader>
           <TableBody>
             {filteredCells.map((cell, index) => (
               <TableRow
                 key={`${cell.id}-${index}`}
-                className="cursor-pointer hover:bg-default-100"
+                className="cursor-pointer hover:bg-muted/50"
                 onClick={() => onRowAction(cell)}
               >
                 <TableCell className="font-mono text-xs">{cell.id}</TableCell>
                 <TableCell>
-                  <Chip color="primary" variant="flat" size="sm">
+                  <Badge variant="default">
                     {cell.position}
-                  </Chip>
+                  </Badge>
                 </TableCell>
                 <TableCell>{cell.cellName}</TableCell>
                 <TableCell>
-                  <Chip color="danger" size="sm">
+                  <Badge variant="destructive">
                     {cell.status}
-                  </Chip>
+                  </Badge>
                 </TableCell>
                 <TableCell>{cell.type}</TableCell>
                 <TableCell className="text-center">{cell.cellCount}</TableCell>
@@ -114,7 +115,7 @@ export const CellTable = ({
             ))}
           </TableBody>
         </Table>
-      </CardBody>
+      </CardContent>
     </Card>
   );
 };

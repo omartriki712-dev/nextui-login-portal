@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardHeader, CardBody, Input, Button } from "@nextui-org/react";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Server } from "lucide-react";
 
@@ -36,50 +39,43 @@ const Login = () => {
               Rack Manager
             </h1>
           </div>
-          <p className="text-sm text-gray-600 text-center">
+          <p className="text-sm text-muted-foreground text-center">
             Connectez-vous pour gérer vos cellules et racks
           </p>
         </CardHeader>
-        <CardBody className="px-8 pb-8 pt-4">
+        <CardContent className="px-8 pb-8 pt-4">
           <form onSubmit={handleLogin} className="flex flex-col gap-5">
-            <Input
-              label="Email"
-              type="email"
-              placeholder="votre@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              variant="bordered"
-              size="lg"
-              classNames={{
-                input: "text-base",
-                label: "text-gray-700 font-medium"
-              }}
-            />
-            <Input
-              label="Mot de passe"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              variant="bordered"
-              size="lg"
-              classNames={{
-                input: "text-base",
-                label: "text-gray-700 font-medium"
-              }}
-            />
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="votre@email.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Mot de passe</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
             <Button 
               type="submit" 
-              color="primary" 
               size="lg" 
               className="mt-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all"
             >
               Se connecter
             </Button>
           </form>
-        </CardBody>
+        </CardContent>
       </Card>
     </div>
   );
