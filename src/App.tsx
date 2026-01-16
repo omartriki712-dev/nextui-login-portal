@@ -9,6 +9,7 @@ import Tanks from "./pages/Tanks";
 import Racks from "./pages/Racks";
 import Boxes from "./pages/Boxes";
 import RackManager from "./pages/RackManager";
+import Reservations from "./pages/Reservations";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/racks" element={<Racks />} />
           <Route path="/boxes" element={<Boxes />} />
           <Route path="/rack-manager" element={<RackManager />} />
+          <Route path="/reservations" element={<Reservations />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
